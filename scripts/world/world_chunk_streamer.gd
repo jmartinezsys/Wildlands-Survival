@@ -9,6 +9,7 @@ const STONE: ItemDefinition = preload("res://resources/items/stone.tres")
 const BERRIES: ItemDefinition = preload("res://resources/items/berries.tres")
 const WATER: ItemDefinition = preload("res://resources/items/water_flask.tres")
 const DEER_SCENE: PackedScene = preload("res://scenes/animals/Deer.tscn")
+const WOLF_SCENE: PackedScene = preload("res://scenes/animals/Wolf.tscn")
 
 var _player: Node2D
 var _loaded_chunks: Dictionary[Vector2i, Node2D] = {}
@@ -72,11 +73,35 @@ func _load_chunk(coord: Vector2i) -> void:
 			pickup.amount = 2
 		pickup.resource_consumed.connect(_on_resource_consumed)
 		chunk.add_child(pickup)
+	if coord.x >= 0 and coord.y >= 0:
+		_spawn_harvestable(chunk, coord, "tree", BRANCH, &"stone_axe", 3, 1.25, 3, Vector2(230.0, 340.0))
+		_spawn_harvestable(chunk, coord, "rock", STONE, &"pickaxe", 3, 1.5, 3, Vector2(390.0, 250.0))
 	if coord in [Vector2i(0, 1), Vector2i(3, 1), Vector2i(2, 0)]:
 		var deer := DEER_SCENE.instantiate() as WanderingAnimal
 		deer.position = Vector2(300.0, 300.0)
 		chunk.add_child(deer)
 		deer.set_player(_player)
+	if coord in [Vector2i(0, 1), Vector2i(3, 1), Vector2i(2, 0)]:
+		var wolf := WOLF_SCENE.instantiate() as WolfController
+		wolf.position = Vector2(460.0, 370.0)
+		chunk.add_child(wolf)
+
+func _spawn_harvestable(chunk: Node2D, coord: Vector2i, kind: String, definition: ItemDefinition, tool_id: StringName, hits: int, duration: float, amount: int, local_position: Vector2) -> void:
+	var key := StringName("%s_%d_%d" % [kind, coord.x, coord.y])
+	if _collected_keys.has(key):
+		return
+	var node := RESOURCE_SCENE.instantiate() as ResourceNode
+	node.name = "%s_%d_%d" % [kind, coord.x, coord.y]
+	node.definition = definition
+	node.resource_key = key
+	node.required_tool_id = tool_id
+	node.hits_required = hits
+	node.interaction_duration = duration
+	node.amount = amount
+	node.interaction_name = "Talar" if kind == "tree" else "Picar"
+	node.position = local_position
+	node.resource_consumed.connect(_on_resource_consumed)
+	chunk.add_child(node)
 
 func _on_resource_consumed(resource_key: StringName) -> void:
 	_collected_keys[resource_key] = true

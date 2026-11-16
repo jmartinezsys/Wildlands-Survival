@@ -1,9 +1,13 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/structures/structure_visual.gd" id="1_visual"]
+[ext_resource type="Script" path="res://scripts/environment/sleep_area.gd" id="2_sleep"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_shelter"]
 size = Vector2(68, 38)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_sleep"]
+radius = 72.0
 
 [node name="Shelter" type="Node2D"]
 
@@ -16,3 +20,11 @@ collision_layer = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
 shape = SubResource("RectangleShape2D_shelter")
+
+[node name="SleepArea" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("2_sleep")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SleepArea"]
+shape = SubResource("CircleShape2D_sleep")

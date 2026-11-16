@@ -65,7 +65,7 @@ func load_game(player: PlayerController, environment: DayNightController, chunks
 	if not inventory.restore_items(inventory_data) or not stats.restore_save_data(stats_data):
 		return false
 	player.global_position = Vector2(float(player_data["x"]), float(player_data["y"]))
-	environment.time_of_day = fposmod(float(environment_data.get("time_of_day", 8.0)), 24.0)
+	environment.set_time_of_day(float(environment_data.get("time_of_day", 8.0)))
 	var saved_weather: String = str(environment_data.get("weather", "Despejado"))
 	if saved_weather in ["Despejado", "Lluvia", "Niebla", "Viento"]:
 		environment.weather_name = saved_weather

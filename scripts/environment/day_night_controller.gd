@@ -3,6 +3,7 @@ class_name DayNightController
 
 signal time_changed(hour: float)
 signal weather_changed(weather_name: String)
+signal day_night_changed(is_night: bool)
 
 @export_range(120.0, 3600.0) var day_length_seconds: float = 900.0
 @export_range(0.0, 24.0) var start_hour: float = 8.0
@@ -12,9 +13,15 @@ var weather_name := "Despejado"
 var wind_strength := 0.0
 var _weather_timer := 90.0
 var _signal_timer := 0.0
+var _was_night := false
+
+var is_night: bool:
+	get:
+		return time_of_day >= 19.0 or time_of_day < 6.0
 
 func _ready() -> void:
 	time_of_day = start_hour
+	_was_night = is_night
 	add_to_group("environment")
 
 func _process(delta: float) -> void:
@@ -35,6 +42,24 @@ func _process(delta: float) -> void:
 	if _signal_timer >= 1.0:
 		_signal_timer = 0.0
 		time_changed.emit(time_of_day)
+		if is_night != _was_night:
+			_was_night = is_night
+			day_night_changed.emit(is_night)
+
+func sleep_until_day() -> void:
+	time_of_day = 7.0
+	_was_night = false
+	var daylight := clampf((sin((time_of_day - 6.0) * TAU / 24.0) + 0.18) / 1.18, 0.0, 1.0)
+	color = Color("53617e").lerp(Color.WHITE, daylight)
+	time_changed.emit(time_of_day)
+	day_night_changed.emit(false)
+
+func set_time_of_day(hour: float) -> void:
+	time_of_day = fposmod(hour, 24.0)
+	var night := is_night
+	_was_night = night
+	time_changed.emit(time_of_day)
+	day_night_changed.emit(night)
 
 func _roll_weather() -> void:
 	var choices := ["Despejado", "Lluvia", "Niebla", "Viento"]

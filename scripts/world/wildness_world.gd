@@ -11,7 +11,37 @@ const TREE_POSITIONS: Array[Vector2] = [
 const ROCK_POSITIONS: Array[Vector2] = [Vector2(350, 520), Vector2(740, 1350), Vector2(1260, 520), Vector2(1510, 770), Vector2(2180, 700)]
 
 func _ready() -> void:
+	_generate_terrain()
 	_create_obstacles()
+
+func _generate_terrain() -> void:
+	var terrain_layer := get_node("TerrainLayer") as TileMapLayer
+	var tile_set := TileSet.new()
+	tile_set.tile_size = Vector2i(80, 80)
+	var atlas := TileSetAtlasSource.new()
+	atlas.texture = load("res://assets/processed/environment/terrain_atlas.png")
+	atlas.texture_region_size = Vector2i(80, 80)
+	for row in range(6):
+		for column in range(12):
+			atlas.create_tile(Vector2i(column, row))
+	tile_set.add_source(atlas, 0)
+	terrain_layer.tile_set = tile_set
+	terrain_layer.clear()
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 45831
+	for y in range(23):
+		for x in range(30):
+			var atlas_coordinate := Vector2i(rng.randi_range(0, 3), rng.randi_range(0, 3))
+			var clearing_center := 9.0 + sin(float(x) * 0.22) * 1.4
+			if x >= 3 and x <= 6 and y >= 14 and y <= 15:
+				atlas_coordinate = Vector2i(8 + x - 3, 4 + y - 14)
+			elif absf(float(y) - clearing_center) < 1.4:
+				atlas_coordinate = Vector2i(rng.randi_range(8, 11), rng.randi_range(0, 3))
+			elif (x * 13 + y * 7) % 31 == 0:
+				atlas_coordinate = Vector2i(rng.randi_range(4, 7), rng.randi_range(4, 5))
+			elif (x * 5 + y * 11) % 37 == 0:
+				atlas_coordinate = Vector2i(rng.randi_range(4, 7), rng.randi_range(0, 3))
+			terrain_layer.set_cell(Vector2i(x, y), 0, atlas_coordinate)
 
 func _create_obstacles() -> void:
 	for tree_position in TREE_POSITIONS:
@@ -30,41 +60,9 @@ func _add_circle_obstacle(obstacle_position: Vector2, radius: float) -> void:
 	add_child(body)
 
 func _draw() -> void:
-	_draw_ground()
-	_draw_water()
 	_draw_brush()
 	_draw_trees()
 	_draw_rocks()
-
-func _draw_ground() -> void:
-	draw_rect(Rect2(Vector2.ZERO, WORLD_SIZE), Color("536b45"))
-	var rng := RandomNumberGenerator.new()
-	rng.seed = 14291
-	for index in range(360):
-		var point := Vector2(rng.randf_range(20.0, WORLD_SIZE.x - 20.0), rng.randf_range(20.0, WORLD_SIZE.y - 20.0))
-		var size := rng.randf_range(5.0, 20.0)
-		var tint := Color("61794c") if index % 3 == 0 else Color("4b6241")
-		_draw_ellipse(point, Vector2(size * 1.4, size), tint)
-	var clearing := PackedVector2Array([
-		Vector2(0, 690), Vector2(0, 630), Vector2(380, 650), Vector2(730, 700),
-		Vector2(1090, 670), Vector2(1450, 610), Vector2(1810, 640), Vector2(2400, 580),
-		Vector2(2400, 850), Vector2(1960, 870), Vector2(1600, 830), Vector2(1220, 900),
-		Vector2(850, 870), Vector2(470, 820), Vector2(0, 860)
-	])
-	draw_colored_polygon(clearing, Color("718052"))
-
-func _draw_water() -> void:
-	var watercourse := PackedVector2Array([
-		Vector2(1930, -60), Vector2(1950, 220), Vector2(2020, 490), Vector2(1980, 730),
-		Vector2(1890, 960), Vector2(1900, 1190), Vector2(1760, 1450), Vector2(1660, 1840)
-	])
-	draw_polyline(watercourse, Color("b5a779"), 196.0, true)
-	draw_polyline(watercourse, Color("527c80"), 154.0, true)
-	for point in watercourse:
-		_draw_ellipse(point, Vector2(98, 98), Color("b5a779"))
-		_draw_ellipse(point, Vector2(77, 77), Color("527c80"))
-	_draw_ellipse(Vector2(430, 1270), Vector2(190, 115), Color("b5a779"))
-	_draw_ellipse(Vector2(430, 1265), Vector2(168, 94), Color("527c80"))
 
 func _draw_brush() -> void:
 	var rng := RandomNumberGenerator.new()

@@ -7,23 +7,52 @@ signal resource_consumed(resource_key: StringName)
 @export_range(1, 20, 1) var amount: int = 1
 @export var interaction_name: String = "Recolectar"
 @export var resource_key: StringName
+@export var required_tool_id: StringName = &""
+@export_range(0.1, 8.0, 0.1) var interaction_duration: float = 0.55
+@export_range(1, 8, 1) var hits_required: int = 1
+
+var _hits_done := 0
 
 func get_interaction_label() -> String:
+	var action := interaction_name
+	if required_tool_id == &"stone_axe":
+		action = "Talar"
+	elif required_tool_id == &"pickaxe":
+		action = "Picar"
 	if definition == null:
-		return interaction_name
-	return "%s %s" % [interaction_name, definition.display_name.to_lower()]
+		return _tool_requirement(action)
+	return _tool_requirement("%s %s" % [action, definition.display_name.to_lower()])
+
+func _tool_requirement(label: String) -> String:
+	if required_tool_id.is_empty():
+		return label
+	var tool_name := "hacha" if required_tool_id == &"stone_axe" else "pico"
+	return "%s (requiere %s)" % [label, tool_name]
 
 func interact(inventory: InventoryComponent) -> bool:
 	if inventory == null or definition == null:
 		return false
+	if not required_tool_id.is_empty() and inventory.get_count(required_tool_id) <= 0:
+		return false
+	_hits_done += 1
+	if _hits_done < hits_required:
+		return false
 	if not inventory.add_item(definition, amount):
+		_hits_done -= 1
 		return false
 	resource_consumed.emit(resource_key)
 	queue_free()
 	return true
 
 func _draw() -> void:
-	if definition != null and definition.item_id == &"water_flask":
+	if interaction_name == "Talar":
+		draw_rect(Rect2(-8, -13, 16, 26), Color("765239"))
+		draw_circle(Vector2(0, -14), 13.0, Color("58734a"))
+		draw_circle(Vector2(-9, -18), 8.0, Color("668451"))
+	elif interaction_name == "Picar":
+		draw_colored_polygon(PackedVector2Array([Vector2(-15, 6), Vector2(-10, -8), Vector2(3, -14), Vector2(14, -8), Vector2(16, 5), Vector2(2, 11)]), Color("77786e"))
+		draw_line(Vector2(-5, -5), Vector2(5, -10), Color("aaa99a"), 2.0, true)
+	elif definition != null and definition.item_id == &"water_flask":
 		draw_rect(Rect2(-5, -9, 10, 18), Color("8db9bf"))
 		draw_rect(Rect2(-3, -12, 6, 4), Color("e1dcc5"))
 		draw_line(Vector2(-3, -4), Vector2(3, -4), Color("c2e0de"), 2.0, true)

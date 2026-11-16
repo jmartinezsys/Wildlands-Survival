@@ -12,6 +12,14 @@ func _ready() -> void:
 	chunk_streamer.configure(player)
 	hud.bind_environment(environment)
 	building.status_message.connect(hud.show_notification)
+	player.swimming_changed.connect(_on_swimming_changed)
+	player.sleep_state_changed.connect(_on_sleep_state_changed)
+
+func _on_swimming_changed(is_swimming: bool) -> void:
+	hud.show_notification("Estás nadando; el movimiento es más lento." if is_swimming else "Saliste del agua.")
+
+func _on_sleep_state_changed(is_sleeping: bool) -> void:
+	hud.show_notification("Descansando..." if is_sleeping else "Amaneció. Has descansado hasta las 07:00.")
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("inventory"):

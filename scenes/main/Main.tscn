@@ -25,3 +25,4 @@ script = ExtResource("6_save")
 
 [connection signal="interaction_prompt_changed" from="Player/Interactor" to="GameHUD" method="set_prompt"]
 [connection signal="resource_collected" from="Player/Interactor" to="GameHUD" method="show_notification"]
+[connection signal="attack_result" from="Player/CombatComponent" to="GameHUD" method="show_notification"]

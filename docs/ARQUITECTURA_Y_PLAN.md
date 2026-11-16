@@ -134,8 +134,16 @@ La cámara seguirá al jugador con suavizado y límites configurables. El movimi
 ## Validación final y estado
 
 - **Motor:** Godot 4.7.2 stable, descargado de forma portable desde el sitio oficial para esta validación. La configuración del proyecto declara Godot 4.7.
-- **Resultado técnico:** el editor headless importó el proyecto, la escena principal inició sin errores y `tests/smoke_test.gd` aprobó inventario, crafting y persistencia.
+- **Resultado técnico:** Godot 4.7.2 importó el proyecto en modo headless. La prueba ampliada `tests/smoke_test.gd` aprobó escena principal, crafting, guardado/carga, nado, cuchillo inicial, requisito de pico, daño, activación nocturna de lobos y sueño hasta las 07:00.
 - **Errores detectados y corregidos durante el trabajo:** API inexistente `draw_ellipse`/`draw_rounded_rect`, polígono de río inválido, clases globales aún sin indexar, identificador de estructura no conservado por el primer enfoque. La validación final no reprodujo esos errores.
-- **Verificación no realizada:** controles en ventana con interacción manual, renderizado/rendimiento real, licencias/ajuste de arte y audio.
-- **Limitación visual importante:** se puede jugar con recursos temporales; el objetivo de personaje realista y mundo HD todavía requiere integrar los recursos originales del usuario.
+- **Verificación no realizada:** una captura de ventana para revisar encuadre, escala y animaciones no pudo completarse porque la automatización visual agotó su tiempo de aprobación. La prueba headless no valida la apariencia final.
+- **Limitación visual:** venado y lobo usan las hojas del usuario con recortes estimados; la hoja compuesta de acciones y el atlas compuesto de objetos se conservan en `assets/source/` pero todavía no se cortan en clips/celdas runtime.
 - **Git:** no se modificó ni se incluyó `.godot`; el `AGENTS.md` aparece modificado por cambios del usuario y debe permanecer fuera de este commit.
+
+## Actualización: personaje y terreno con hojas del usuario
+
+- Los originales están organizados bajo `assets/source/` y las derivaciones bajo `assets/processed/`. La hoja del personaje conserva sus píxeles originales; el patrón de transparencia se retira en la copia procesada. `sprite_sheet_animator.gd` prepara 10 cuadros por cada una de 8 filas/direcciones; la asignación aún debe confirmarse visualmente.
+- `assets/source/environment/terrain_spritesheet.png` se conserva sin modificar y `assets/processed/environment/terrain_atlas.png` alimenta la capa de terreno generada por `wildness_world.gd`.
+- Las áreas `River` y `Pond` combinan piezas de orilla del atlas con un shader animado. Al entrar, el jugador cambia a estado de nado, se desplaza más despacio y tiene un movimiento vertical leve; al salir vuelve a su desplazamiento normal.
+- **Validación ejecutada:** importación y arranque headless en Godot 4.7.2; `tests/smoke_test.gd` confirma entrada/salida de agua en río y estanque, además de crafting y guardado/carga. Aprobada sin errores.
+- **Pendiente:** revisión en ventana para ajustar el mapeo visual de filas del personaje, la escala y las juntas de las orillas; el nadador usa el ciclo direccional existente, pues la hoja no incluye una pose específica de nado.

@@ -8,6 +8,9 @@ signal item_added(item_id: StringName, amount: int, total: int)
 var _items: Dictionary[StringName, int] = {}
 var _definitions: Dictionary[StringName, ItemDefinition] = {}
 
+func _ready() -> void:
+	add_item(preload("res://resources/items/knife.tres"), 1)
+
 func add_item(definition: ItemDefinition, amount: int) -> bool:
 	if definition == null or amount <= 0 or definition.item_id.is_empty():
 		return false
@@ -57,6 +60,8 @@ func get_entries() -> Array[Dictionary]:
 
 func restore_items(saved_items: Dictionary) -> bool:
 	var definitions: Dictionary[StringName, ItemDefinition] = {
+		&"knife": preload("res://resources/items/knife.tres"),
+		&"pickaxe": preload("res://resources/items/pickaxe.tres"),
 		&"branch": preload("res://resources/items/branch.tres"),
 		&"stone": preload("res://resources/items/stone.tres"),
 		&"stone_axe": preload("res://resources/items/stone_axe.tres"),

@@ -70,7 +70,7 @@ func toggle_crafting() -> void:
 	craft_panel.visible = not craft_panel.visible
 
 func _build_recipe_buttons() -> void:
-	for recipe_path in ["res://resources/recipes/stone_axe.tres", "res://resources/recipes/campfire_kit.tres", "res://resources/recipes/shelter_kit.tres", "res://resources/recipes/storage_kit.tres", "res://resources/recipes/workbench_kit.tres"]:
+	for recipe_path in ["res://resources/recipes/stone_axe.tres", "res://resources/recipes/pickaxe.tres", "res://resources/recipes/campfire_kit.tres", "res://resources/recipes/shelter_kit.tres", "res://resources/recipes/storage_kit.tres", "res://resources/recipes/workbench_kit.tres"]:
 		var recipe := load(recipe_path) as CraftingRecipe
 		if recipe == null:
 			continue

@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/wildness_world.gd" id="1_world"]
 [ext_resource type="Script" path="res://scripts/world/world_chunk_streamer.gd" id="2_chunks"]
 [ext_resource type="Script" path="res://scripts/environment/day_night_controller.gd" id="3_day_night"]
+[ext_resource type="PackedScene" path="res://scenes/world/WaterArea.tscn" id="4_water"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_top"]
 size = Vector2(2400, 48)
@@ -20,10 +21,15 @@ size = Vector2(48, 1800)
 script = ExtResource("1_world")
 
 [node name="TerrainLayer" type="TileMapLayer" parent="."]
-z_index = -10
+z_index = -2
 
 [node name="DetailLayer" type="TileMapLayer" parent="."]
 z_index = 1
+
+[node name="River" parent="." instance=ExtResource("4_water")]
+
+[node name="Pond" parent="." instance=ExtResource("4_water")]
+water_body = &"pond"
 
 [node name="ChunkStreamer" type="Node2D" parent="."]
 script = ExtResource("2_chunks")
