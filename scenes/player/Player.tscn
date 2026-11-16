@@ -1,0 +1,52 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://scripts/player/player_controller.gd" id="1_player"]
+[ext_resource type="Script" path="res://scripts/player/vector_character.gd" id="2_visual"]
+[ext_resource type="Script" path="res://scripts/player/player_interactor.gd" id="3_interactor"]
+[ext_resource type="Script" path="res://scripts/inventory/inventory_component.gd" id="4_inventory"]
+[ext_resource type="Script" path="res://scripts/survival/survival_stats.gd" id="5_survival"]
+[ext_resource type="Script" path="res://scripts/crafting/crafting_component.gd" id="6_crafting"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_player"]
+radius = 10.0
+height = 32.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_interactor"]
+radius = 72.0
+
+[node name="Player" type="CharacterBody2D"]
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("1_player")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 2)
+shape = SubResource("CapsuleShape2D_player")
+
+[node name="CharacterVisual" type="Node2D" parent="."]
+script = ExtResource("2_visual")
+
+[node name="InventoryComponent" type="Node" parent="."]
+script = ExtResource("4_inventory")
+
+[node name="SurvivalStats" type="Node" parent="."]
+script = ExtResource("5_survival")
+
+[node name="CraftingComponent" type="Node" parent="."]
+script = ExtResource("6_crafting")
+
+[node name="Interactor" type="Area2D" parent="."]
+collision_mask = 4
+monitoring = true
+script = ExtResource("3_interactor")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Interactor"]
+shape = SubResource("CircleShape2D_interactor")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position_smoothing_enabled = true
+position_smoothing_speed = 5.0
+limit_left = 0
+limit_top = 0
+limit_right = 2400
+limit_bottom = 1800

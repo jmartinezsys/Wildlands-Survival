@@ -1,0 +1,160 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/game_hud.gd" id="1_hud"]
+[ext_resource type="Script" path="res://scripts/environment/weather_overlay.gd" id="2_weather"]
+
+[node name="GameHUD" type="CanvasLayer"]
+script = ExtResource("1_hud")
+process_mode = 3
+
+[node name="WeatherOverlay" type="Node2D" parent="."]
+z_index = -1
+script = ExtResource("2_weather")
+
+[node name="Margin" type="MarginContainer" parent="."]
+offset_left = 24.0
+offset_top = 24.0
+offset_right = 480.0
+offset_bottom = 160.0
+
+[node name="Content" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+
+[node name="Prompt" type="Label" parent="Margin/Content"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+
+[node name="Notice" type="Label" parent="Margin/Content"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+
+[node name="NoticeTimer" type="Timer" parent="."]
+wait_time = 2.2
+one_shot = true
+
+[connection signal="timeout" from="NoticeTimer" to="." method="_on_notice_timer_timeout"]
+
+[node name="StatsPanel" type="PanelContainer" parent="."]
+offset_left = 1000.0
+offset_top = 24.0
+offset_right = 1256.0
+offset_bottom = 228.0
+
+[node name="Stats" type="VBoxContainer" parent="StatsPanel"]
+layout_mode = 2
+
+[node name="HealthLabel" type="Label" parent="StatsPanel/Stats"]
+layout_mode = 2
+text = "Salud"
+
+[node name="Health" type="ProgressBar" parent="StatsPanel/Stats"]
+layout_mode = 2
+max_value = 100.0
+value = 100.0
+show_percentage = false
+
+[node name="Hunger" type="ProgressBar" parent="StatsPanel/Stats"]
+layout_mode = 2
+max_value = 100.0
+value = 100.0
+show_percentage = false
+
+[node name="HungerLabel" type="Label" parent="StatsPanel/Stats"]
+layout_mode = 2
+text = "Hambre"
+
+[node name="Thirst" type="ProgressBar" parent="StatsPanel/Stats"]
+layout_mode = 2
+max_value = 100.0
+value = 100.0
+show_percentage = false
+
+[node name="ThirstLabel" type="Label" parent="StatsPanel/Stats"]
+layout_mode = 2
+text = "Sed"
+
+[node name="Energy" type="ProgressBar" parent="StatsPanel/Stats"]
+layout_mode = 2
+max_value = 100.0
+value = 100.0
+show_percentage = false
+
+[node name="EnergyLabel" type="Label" parent="StatsPanel/Stats"]
+layout_mode = 2
+text = "Energía"
+
+[node name="Temperature" type="Label" parent="StatsPanel/Stats"]
+layout_mode = 2
+text = "Temperatura  37.0 °C"
+
+[node name="Clock" type="Label" parent="StatsPanel/Stats"]
+layout_mode = 2
+text = "08:00"
+
+[node name="Weather" type="Label" parent="StatsPanel/Stats"]
+layout_mode = 2
+text = "Despejado"
+
+[node name="InventoryPanel" type="PanelContainer" parent="."]
+visible = false
+offset_left = 430.0
+offset_top = 150.0
+offset_right = 850.0
+offset_bottom = 570.0
+
+[node name="Content" type="VBoxContainer" parent="InventoryPanel"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="InventoryPanel/Content"]
+layout_mode = 2
+text = "Mochila"
+theme_override_font_sizes/font_size = 24
+
+[node name="InventoryList" type="ItemList" parent="InventoryPanel/Content"]
+layout_mode = 2
+size_flags_vertical = 3
+max_columns = 1
+
+[node name="Description" type="Label" parent="InventoryPanel/Content"]
+layout_mode = 2
+text = "Tu mochila está vacía."
+autowrap_mode = 2
+
+[node name="Actions" type="HBoxContainer" parent="InventoryPanel/Content"]
+layout_mode = 2
+
+[node name="UseButton" type="Button" parent="InventoryPanel/Content/Actions"]
+layout_mode = 2
+text = "Usar"
+
+[node name="DropButton" type="Button" parent="InventoryPanel/Content/Actions"]
+layout_mode = 2
+text = "Eliminar"
+
+[connection signal="item_selected" from="InventoryPanel/Content/InventoryList" to="." method="_on_item_selected"]
+[connection signal="pressed" from="InventoryPanel/Content/Actions/UseButton" to="." method="_on_use_pressed"]
+[connection signal="pressed" from="InventoryPanel/Content/Actions/DropButton" to="." method="_on_drop_pressed"]
+
+[node name="CraftPanel" type="PanelContainer" parent="."]
+visible = false
+offset_left = 470.0
+offset_top = 180.0
+offset_right = 810.0
+offset_bottom = 500.0
+
+[node name="Content" type="VBoxContainer" parent="CraftPanel"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="CraftPanel/Content"]
+layout_mode = 2
+text = "Fabricación"
+theme_override_font_sizes/font_size = 24
+
+[node name="Recipes" type="VBoxContainer" parent="CraftPanel/Content"]
+layout_mode = 2
+
+[node name="Hint" type="Label" parent="CraftPanel/Content"]
+layout_mode = 2
+text = "E interactúa · C fabrica · B construye el kit disponible · F5 guarda · F9 carga"

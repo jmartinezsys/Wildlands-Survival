@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/item_definition.gd" id="1_definition"]
+
+[resource]
+script = ExtResource("1_definition")
+item_id = &"shelter_kit"
+display_name = "Kit de refugio"
+description = "Materiales preparados para montar un refugio sencillo."
+category = &"building_kit"
+max_stack = 3

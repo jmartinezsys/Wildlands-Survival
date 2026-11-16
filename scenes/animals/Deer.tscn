@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/animals/wandering_animal.gd" id="1_animal"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_deer"]
+radius = 8.0
+height = 22.0
+
+[node name="Deer" type="CharacterBody2D"]
+collision_layer = 8
+collision_mask = 1
+script = ExtResource("1_animal")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_deer")

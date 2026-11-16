@@ -1,0 +1,27 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/world/World.tscn" id="1_world"]
+[ext_resource type="PackedScene" path="res://scenes/player/Player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://scenes/interface/GameHUD.tscn" id="3_hud"]
+[ext_resource type="Script" path="res://scripts/main/game_session.gd" id="4_session"]
+[ext_resource type="Script" path="res://scripts/construction/building_controller.gd" id="5_building"]
+[ext_resource type="Script" path="res://scripts/systems/save_system.gd" id="6_save"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("4_session")
+
+[node name="World" parent="." instance=ExtResource("1_world")]
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(1200, 760)
+
+[node name="GameHUD" parent="." instance=ExtResource("3_hud")]
+
+[node name="BuildingController" type="Node2D" parent="."]
+script = ExtResource("5_building")
+
+[node name="SaveSystem" type="Node" parent="."]
+script = ExtResource("6_save")
+
+[connection signal="interaction_prompt_changed" from="Player/Interactor" to="GameHUD" method="set_prompt"]
+[connection signal="resource_collected" from="Player/Interactor" to="GameHUD" method="show_notification"]

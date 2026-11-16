@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/structures/structure_visual.gd" id="1_visual"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_table"]
+size = Vector2(60, 32)
+
+[node name="CraftingTable" type="Node2D"]
+
+[node name="Visual" type="Node2D" parent="."]
+script = ExtResource("1_visual")
+structure_type = &"workbench"
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+collision_layer = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+shape = SubResource("RectangleShape2D_table")

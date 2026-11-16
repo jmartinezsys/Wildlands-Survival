@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="CraftingRecipe" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/crafting/crafting_recipe.gd" id="1_recipe"]
+[ext_resource type="Script" path="res://scripts/crafting/recipe_ingredient.gd" id="2_ingredient"]
+[ext_resource type="Resource" path="res://resources/items/campfire_kit.tres" id="3_result"]
+
+[sub_resource type="Resource" id="RecipeIngredient_branch"]
+script = ExtResource("2_ingredient")
+item_id = &"branch"
+amount = 3
+
+[sub_resource type="Resource" id="RecipeIngredient_stone"]
+script = ExtResource("2_ingredient")
+item_id = &"stone"
+amount = 2
+
+[resource]
+script = ExtResource("1_recipe")
+recipe_id = &"campfire_kit"
+display_name = "Kit de fogata"
+description = "Prepara los materiales para montar una fogata."
+ingredients = Array[ExtResource("2_ingredient")]( [SubResource("RecipeIngredient_branch"), SubResource("RecipeIngredient_stone")] )
+result = ExtResource("3_result")

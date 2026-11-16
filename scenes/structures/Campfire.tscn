@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/structures/campfire_visual.gd" id="1_visual"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_structure"]
+radius = 22.0
+
+[node name="Campfire" type="Node2D"]
+groups = ["persistent_structure"]
+
+[node name="Visual" type="Node2D" parent="."]
+script = ExtResource("1_visual")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+collision_layer = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+shape = SubResource("CircleShape2D_structure")
