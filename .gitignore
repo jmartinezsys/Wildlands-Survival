@@ -1,0 +1,15 @@
+# Archivos temporales y caché de Godot
+.godot/
+
+# Archivos temporales del sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Archivos temporales de editores
+.vscode/
+.idea/
+
+# Archivos de compilación
+*.tmp
+*.bak
