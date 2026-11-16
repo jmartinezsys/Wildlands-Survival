@@ -1,8 +1,9 @@
 # Terreno y agua
 
-- `terrain_spritesheet.png` conserva la hoja recibida (1024 × 559, RGB).
-- `terrain_atlas.png` es una copia de trabajo ordenada como atlas 12 × 6 de celdas 80 × 80; elimina los márgenes entre las celdas y permite usar `TileMapLayer`.
-- Los grupos de columnas 0–3, 4–7 y 8–11 contienen terreno de hierba, tierra/piedra y caminos; las dos filas inferiores incluyen arena, suelo rocoso y piezas de orilla.
-- El agua usa las piezas de orilla del atlas como transición visual y un shader animado para la superficie. `WaterArea` define la forma de río/estanque, detecta al jugador y activa nado con desplazamiento reducido.
+- `ground_tilesheet.png` es la hoja nueva recibida (1024 × 559, RGB); se conserva sin modificar.
+- Sus 12 columnas y seis bandas completas de suelo se recortaron en celdas de 56 × 56 px. El atlas runtime contiene 108 celdas de 32 × 32 px: 60 de suelo y 48 transformaciones de las 12 piezas de transición mediante rotación de 90°, 180° y 270°.
+- Las bandas usadas contienen hierba, vegetación, tierra, arena, piedra y bordes de transición. La última banda de agua se conserva en el original, pero se omite del suelo repetible porque está cortada por el borde inferior de la imagen.
+- `terrain_spritesheet.png` y `assets/processed/environment/terrain_atlas.png` son el conjunto anterior; permanecen como respaldo, pero `wildness_world.gd` ya no los usa para generar el suelo.
+- El agua sigue usando su shader y sus áreas de río/estanque; no depende de la banda de agua de esta hoja.
 
-El archivo original no se modifica. Las posiciones de recorte se dedujeron de la separación visible en la hoja y se pueden ajustar si el archivo fuente tiene una plantilla de atlas más precisa.
+El original no se modifica. `assets/previews/ground_tilesheet_cells_preview.png` permite revisar los recortes medidos antes de importarlos al motor.

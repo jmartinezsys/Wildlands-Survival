@@ -11,6 +11,21 @@ func _run() -> void:
 	var game := main_scene.instantiate()
 	root.add_child(game)
 	await process_frame
+	var terrain := game.get_node("World/TerrainLayer") as TileMapLayer
+	if terrain.tile_set.tile_size != Vector2i(32, 32) or terrain.get_used_cells().size() != 75 * 57:
+		_fail("El suelo no cubre la cuadrícula completa de 32 px.")
+		return
+	for cell in terrain.get_used_cells():
+		var atlas_cell := terrain.get_cell_atlas_coords(cell)
+		if terrain.get_cell_source_id(cell) != 0 or atlas_cell.x < 0 or atlas_cell.x >= 12 or atlas_cell.y < 0 or atlas_cell.y >= 9:
+			_fail("El suelo contiene una referencia inválida del atlas nuevo.")
+			return
+	if terrain.get_cell_atlas_coords(Vector2i(46, 24)).y != 2 or terrain.get_cell_atlas_coords(Vector2i(21, 35)).y != 4:
+		_fail("Los caminos de tierra y arena no están conectados a sus zonas objetivo.")
+		return
+	if terrain.get_cell_atlas_coords(Vector2i(46, 23)).y != 5 or terrain.get_cell_atlas_coords(Vector2i(46, 25)).y != 7:
+		_fail("Los bordes del camino no están usando las orientaciones de transición esperadas.")
+		return
 	var player := game.get_node("Player") as PlayerController
 	var inventory := player.get_node("InventoryComponent") as InventoryComponent
 	var crafting := player.get_node("CraftingComponent") as CraftingComponent
@@ -126,7 +141,7 @@ func _run() -> void:
 			return
 	for water_area in get_nodes_in_group("swimmable_water"):
 		water_area.monitoring = false
-	print("Prueba de integración aprobada: juego, crafting, guardado/carga, nado, cuchillo inicial, herramientas requeridas, daño, lobos nocturnos y descanso hasta el día.")
+	print("Prueba de integración aprobada: atlas continuo 32x32, juego, crafting, guardado/carga, nado, cuchillo inicial, herramientas requeridas, daño, lobos nocturnos y descanso hasta el día.")
 	quit(0)
 
 func _fail(message: String) -> void:
